@@ -48,7 +48,7 @@ ros2 launch example_launch multi_realsense_launch.py
 
 ## Workspace Structure
 
-- `workspace/`: Your main ROS2 workspace
+- `workspace/`: The main ROS2 workspace
 - `ros2_ws/`: Additional ROS2 workspace
 - Both are automatically sourced in the container
 
@@ -77,16 +77,15 @@ source install/setup.bash
 
 ## Features Included
 
-- ✅ ROS2 Humble Desktop
-- ✅ CUDA 12.6 (JetPack 6.1.2 compatible)
-- ✅ Intel RealSense SDK 2.x
-- ✅ RealSense ROS2 wrapper
-- ✅ Full perception stack (PCL, OpenCV, image_pipeline)
-- ✅ USB passthrough for multiple cameras
-- ✅ Host networking for ROS2 DDS
-- ✅ Display passthrough (X11)
-- ✅ Persistent storage volumes
-- ✅ GPU acceleration
+- ROS2 Humble Desktop
+- CUDA 12.6 (JetPack 6.1.2 compatible)
+- Intel RealSense SDK 2.x
+- RealSense ROS2 wrapper
+- USB passthrough for multiple cameras
+- Host networking for ROS2 DDS
+- Display passthrough (X11)
+- Persistent storage volumes
+- GPU acceleration
 
 ## Advanced Configuration
 
