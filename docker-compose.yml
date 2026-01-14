@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  jetson_ros2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jetson-ros2-humble:latest
+    container_name: jetson_ros2_perception
+    
+    # Use host networking for ROS2 DDS communication
+    network_mode: host
+    
+    # Enable all NVIDIA GPU capabilities
+    runtime: nvidia
+    
+    # Privileged mode for full hardware access
+    privileged: true
+    
+    environment:
+      # Display passthrough
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=/tmp/.docker.xauth
+      
+      # NVIDIA/CUDA settings
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      
+      # ROS2 settings
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0
+      #- RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      
+      # CUDA settings
+      - CUDA_VISIBLE_DEVICES=0
+      - LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
+    
+    volumes:
+      # X11 display passthrough
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
+      
+      # Persistent workspace
+      - ./workspace:/workspace:rw
+      - ./ros2_ws:/root/ros2_ws:rw
+      
+      # USB device access
+      - /dev:/dev:rw
+      
+      # Shared memory for large message passing
+      - /dev/shm:/dev/shm
+      
+      # udev rules
+      - /run/udev:/run/udev:ro
+      
+      # Optional: share host's .bashrc extensions
+      - ./bashrc_extensions:/root/.bashrc_extensions:ro
+    
+    devices:
+      # Pass through all USB devices (for RealSense cameras)
+      - /dev/bus/usb:/dev/bus/usb
+      
+      # Video devices
+      - /dev/video0:/dev/video0
+      - /dev/video1:/dev/video1
+      - /dev/video2:/dev/video2
+      - /dev/video3:/dev/video3
+      - /dev/video4:/dev/video4
+      - /dev/video5:/dev/video5
+      - /dev/video6:/dev/video6
+      - /dev/video7:/dev/video7
+      - /dev/video8:/dev/video8
+      - /dev/video9:/dev/video9
+      
+      # Media devices for cameras
+      - /dev/media0:/dev/media0
+      - /dev/media1:/dev/media1
+      - /dev/media2:/dev/media2
+      - /dev/media3:/dev/media3
+      - /dev/media4:/dev/media4
+    
+    # Increase shared memory size for perception workloads
+    shm_size: '2gb'
+    
+    stdin_open: true
+    tty: true
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "ros2", "node", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
